@@ -12,6 +12,8 @@
 #include "rtc.hpp"
 #include "wifi.hpp"
 
+#include <chrono>
+using namespace std::chrono;
 int main()
 {
     stdio_init_all();

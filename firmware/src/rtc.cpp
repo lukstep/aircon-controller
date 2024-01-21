@@ -1,4 +1,5 @@
 #include "rtc.hpp"
+#include <chrono>
 
 #include "hardware/rtc.h"
 #include "pico/stdlib.h"
@@ -29,3 +30,11 @@ void setTime(datetime_t *time)
 }
 
 } // namespace rtc
+
+namespace std::chrono
+{
+time_point<high_resolution_clock> high_resolution_clock::now()
+{
+    return time_point(nanoseconds(1000ull * static_cast<nanoseconds::rep>(time_us_64())));
+}
+} // namespace std::chrono

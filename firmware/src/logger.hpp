@@ -1,5 +1,6 @@
 #pragma once
 #include <array>
+#include <chrono>
 #include <concepts>
 #include <cstddef>
 #include <cstdint>
@@ -7,6 +8,7 @@
 #include <limits>
 #include <string>
 
+#include "pico/types.h"
 #include "pico/util/datetime.h"
 
 class Logger
@@ -24,7 +26,7 @@ class Logger
     Radix_t mRadixSetting;
 
   public:
-    Logger(loggerType type) : type(type), mRadixSetting(Radix_t::Hex){};
+    Logger(loggerType type) : type(type), mRadixSetting(Radix_t::Decimal){};
 
     Logger &operator<<(const char *string)
     {
@@ -38,7 +40,7 @@ class Logger
         requires std::integral<T>
     Logger &operator<<(T value)
     {
-        static_assert(sizeof(T) < sizeof(int64_t), "Type bigger than 64 bits is not supported");
+        static_assert(sizeof(T) <= sizeof(int64_t), "Type bigger than 64 bits is not supported");
         constexpr size_t prefixAndNullSize = 3;
         constexpr size_t maxSize = std::numeric_limits<T>::digits + prefixAndNullSize;
         char string[maxSize];
@@ -93,8 +95,6 @@ class Logger
             last -= 1;
         }
 
-        string[fieldindex + 1] = '\0';
-
         write(string, fieldindex);
 
         return *this;
@@ -114,6 +114,22 @@ class Logger
         const size_t length = sprintf(string, "%02d-%02d-%04d %02d:%02d:%02d", time.day, time.month,
                                       time.year, time.hour, time.min, time.sec);
         write(string, length);
+
+        return *this;
+    }
+
+    Logger &operator<<(std::chrono::nanoseconds duration)
+    {
+        operator<<(duration.count());
+        operator<<("ns");
+
+        return *this;
+    }
+
+    Logger &operator<<(std::chrono::milliseconds duration)
+    {
+        operator<<(duration.count());
+        operator<<("ms");
 
         return *this;
     }
