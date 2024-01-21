@@ -1,6 +1,6 @@
 pico_sdk_init()
 
-add_executable(aircon main.cpp wifi.cpp logger.cpp ntp.cpp rtc.cpp)
+add_executable(aircon main.cpp wifi.cpp logger.cpp ntp.cpp rtc.cpp rs485.cpp)
 
 pico_enable_stdio_usb(aircon 1)
 pico_enable_stdio_uart(aircon 1)
