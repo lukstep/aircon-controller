@@ -9,6 +9,7 @@
 
 #include "logger.hpp"
 #include "ntp.hpp"
+#include "rs485.hpp"
 #include "rtc.hpp"
 #include "wifi.hpp"
 
@@ -47,6 +48,7 @@ int main()
             *logger << rtc::getTime() << " RTC synced!\n";
         }
     }
+    RS485::init();
 
     while (5)
     {
